@@ -8,6 +8,8 @@ The solution leverages Azure Integration Sevices to automate order fulfillment f
 2. Azure Service Bus Queue: Landing area for all the JSON payloads posted from D365.
 3. Process Order Service Bus Queue Trigger Azure Function - This function gets triggered as new JSON payloads arrive in the queue. The purpose of this function is to tranform JSON payload to CSV and publish it to 3PL SFTP store for order fulfillment. If the function is able to successfully process incoming JSON dispatch order, then correponding message is taken off the queue, else the message remains in queue for until next try.
 
+![image](https://github.com/ashwinpunichithaya/bluecorp/assets/61331734/72fb85a8-1767-40e6-a2ee-0acb1e583218)
+
 ### Authentication
 1. D365 to Dispatch Order Azure Function - Dispatch Order Azure Function will be configured for RBAC. New app registration will be made available with `Contributor` rights on the function. D365 app is expected to use the EntraID credentials (Client and Secret) to invoke the function.
 2. Managed Identities: The functions, service bus and associated storage accounts will leverage managed identities (System or User) to communicate with each other. The identities will be assigned necessary roles to enable the communication. For e.g. Dispatch Order Azure Function will be assigned `Azure Service Bus Data Sender` to allow the JSON payloads to be sent to the service bus queue. The role assignments will mirror operations supported by the function.
@@ -17,9 +19,8 @@ The solution leverages Azure Integration Sevices to automate order fulfillment f
    
 ### App Insights
 1. App Insights telemetry will be enabled on all the azure services.
-2. Any custom telemetry will be ingested using TelemetryClient.
-   
-![image](https://github.com/ashwinpunichithaya/bluecorp/assets/61331734/72fb85a8-1767-40e6-a2ee-0acb1e583218)
+2. Any custom telemetry will be ingested using TelemetryClient.  
+
 
 ## Alternative Design
 The proposed solution uses code mapping to translate JSON payload to CSV. This is a drawback as any minor change in mapping would require us to rebuild the functions. Azure Data Factory is good alternative to overcome the drawback in the proposed design. The author has not worked on Azure Data Factory and hence the proposed design. 
